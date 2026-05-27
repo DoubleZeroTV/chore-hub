@@ -1,0 +1,2069 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8"/>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+
+<title>Chore Hub</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet"/>
+
+<style>
+
+:root {
+
+  --bg: #0f0e17;
+
+  --surface: #1a1929;
+
+  --surface2: #222136;
+
+  --surface3: #2a2840;
+
+  --border: rgba(255,255,255,0.07);
+
+  --text: #f0eeff;
+
+  --text2: #9b98bb;
+
+  --text3: #5f5d7a;
+
+  --purple: #7c6fe0;
+
+  --purple-light: #a99ef5;
+
+  --purple-dim: rgba(124,111,224,0.15);
+
+  --teal: #1ec9a0;
+
+  --teal-dim: rgba(30,201,160,0.15);
+
+  --amber: #f5a623;
+
+  --amber-dim: rgba(245,166,35,0.15);
+
+  --coral: #f06060;
+
+  --coral-dim: rgba(240,96,96,0.15);
+
+  --pink: #e56db1;
+
+  --pink-dim: rgba(229,109,177,0.15);
+
+  --blue: #5ba4f5;
+
+  --blue-dim: rgba(91,164,245,0.15);
+
+  --radius: 14px;
+
+  --radius-lg: 20px;
+
+  --radius-xl: 28px;
+
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+body {
+
+  font-family: 'Nunito', sans-serif;
+
+  background: var(--bg);
+
+  color: var(--text);
+
+  min-height: 100vh;
+
+  overflow-x: hidden;
+
+}
+
+/* Background stars */
+
+body::before {
+
+  content: '';
+
+  position: fixed;
+
+  inset: 0;
+
+  background-image:
+
+    radial-gradient(circle at 20% 20%, rgba(124,111,224,0.08) 0%, transparent 50%),
+
+    radial-gradient(circle at 80% 80%, rgba(30,201,160,0.06) 0%, transparent 50%);
+
+  pointer-events: none;
+
+  z-index: 0;
+
+}
+
+.app {
+
+  position: relative;
+
+  z-index: 1;
+
+  max-width: 960px;
+
+  margin: 0 auto;
+
+  padding: 0 0 80px;
+
+}
+
+/* ─── HEADER ─── */
+
+.header {
+
+  padding: 24px 24px 0;
+
+  display: flex;
+
+  align-items: flex-start;
+
+  justify-content: space-between;
+
+  gap: 12px;
+
+}
+
+.header-left h1 {
+
+  font-family: 'Fredoka One', cursive;
+
+  font-size: 32px;
+
+  color: var(--text);
+
+  letter-spacing: .5px;
+
+  line-height: 1;
+
+}
+
+.header-left h1 span {
+
+  background: linear-gradient(135deg, var(--purple-light), var(--teal));
+
+  -webkit-background-clip: text;
+
+  -webkit-text-fill-color: transparent;
+
+  background-clip: text;
+
+}
+
+.header-date {
+
+  font-size: 13px;
+
+  color: var(--text3);
+
+  margin-top: 4px;
+
+  font-weight: 600;
+
+}
+
+.header-actions {
+
+  display: flex;
+
+  gap: 8px;
+
+}
+
+.icon-btn {
+
+  width: 40px; height: 40px;
+
+  border-radius: 12px;
+
+  background: var(--surface);
+
+  border: 1px solid var(--border);
+
+  color: var(--text2);
+
+  font-size: 18px;
+
+  cursor: pointer;
+
+  display: flex; align-items: center; justify-content: center;
+
+  transition: all .2s;
+
+}
+
+.icon-btn:hover { background: var(--surface2); color: var(--text); }
+
+/* ─── KID CARDS ─── */
+
+.kids-scroll {
+
+  padding: 20px 24px 0;
+
+  display: flex;
+
+  gap: 12px;
+
+  overflow-x: auto;
+
+  scrollbar-width: none;
+
+}
+
+.kids-scroll::-webkit-scrollbar { display: none; }
+
+.kid-card {
+
+  flex-shrink: 0;
+
+  width: 160px;
+
+  background: var(--surface);
+
+  border: 1.5px solid var(--border);
+
+  border-radius: var(--radius-xl);
+
+  padding: 16px;
+
+  cursor: pointer;
+
+  transition: all .25s;
+
+  position: relative;
+
+  overflow: hidden;
+
+}
+
+.kid-card::before {
+
+  content: '';
+
+  position: absolute;
+
+  top: -30px; right: -30px;
+
+  width: 80px; height: 80px;
+
+  border-radius: 50%;
+
+  opacity: .15;
+
+  transition: opacity .25s;
+
+}
+
+.kid-card.active { border-color: var(--kid-color); }
+
+.kid-card.active::before { opacity: .25; }
+
+.kid-card.active .kid-avatar { box-shadow: 0 0 0 3px var(--kid-color); }
+
+.kid-avatar {
+
+  width: 48px; height: 48px;
+
+  border-radius: 50%;
+
+  display: flex; align-items: center; justify-content: center;
+
+  font-family: 'Fredoka One', cursive;
+
+  font-size: 20px;
+
+  margin-bottom: 10px;
+
+  color: #fff;
+
+  position: relative;
+
+  z-index: 1;
+
+  transition: box-shadow .25s;
+
+}
+
+.kid-name {
+
+  font-size: 15px;
+
+  font-weight: 800;
+
+  color: var(--text);
+
+  position: relative;
+
+  z-index: 1;
+
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+}
+
+.kid-stars {
+
+  font-size: 12px;
+
+  color: var(--text2);
+
+  margin-top: 3px;
+
+  font-weight: 600;
+
+  position: relative;
+
+  z-index: 1;
+
+}
+
+.kid-progress-mini {
+
+  margin-top: 10px;
+
+  height: 4px;
+
+  background: rgba(255,255,255,.08);
+
+  border-radius: 4px;
+
+  overflow: hidden;
+
+  position: relative;
+
+  z-index: 1;
+
+}
+
+.kid-progress-mini-bar {
+
+  height: 100%;
+
+  border-radius: 4px;
+
+  transition: width .4s;
+
+}
+
+.add-kid-card {
+
+  flex-shrink: 0;
+
+  width: 100px;
+
+  background: transparent;
+
+  border: 1.5px dashed rgba(255,255,255,0.12);
+
+  border-radius: var(--radius-xl);
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 6px;
+
+  cursor: pointer;
+
+  transition: all .2s;
+
+  color: var(--text3);
+
+  font-size: 13px;
+
+  font-weight: 700;
+
+  padding: 16px 8px;
+
+}
+
+.add-kid-card:hover { border-color: var(--purple); color: var(--purple-light); }
+
+.add-kid-card svg { opacity: .6; }
+
+/* ─── MAIN CONTENT ─── */
+
+.main {
+
+  padding: 20px 24px 0;
+
+  display: grid;
+
+  grid-template-columns: 1fr 300px;
+
+  gap: 16px;
+
+}
+
+@media(max-width: 700px) {
+
+  .main { grid-template-columns: 1fr; }
+
+  .sidebar { order: -1; }
+
+}
+
+/* ─── STATS ROW ─── */
+
+.stats-row {
+
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 10px;
+
+  margin-bottom: 16px;
+
+}
+
+.stat-card {
+
+  background: var(--surface);
+
+  border: 1px solid var(--border);
+
+  border-radius: var(--radius);
+
+  padding: 14px;
+
+  position: relative;
+
+  overflow: hidden;
+
+}
+
+.stat-card::after {
+
+  content: '';
+
+  position: absolute;
+
+  bottom: -10px; right: -10px;
+
+  width: 50px; height: 50px;
+
+  border-radius: 50%;
+
+  opacity: .08;
+
+}
+
+.stat-icon {
+
+  font-size: 20px;
+
+  margin-bottom: 8px;
+
+  display: block;
+
+}
+
+.stat-value {
+
+  font-family: 'Fredoka One', cursive;
+
+  font-size: 26px;
+
+  line-height: 1;
+
+  color: var(--text);
+
+}
+
+.stat-label {
+
+  font-size: 11px;
+
+  color: var(--text3);
+
+  font-weight: 700;
+
+  text-transform: uppercase;
+
+  letter-spacing: .05em;
+
+  margin-top: 2px;
+
+}
+
+/* ─── CHORE SECTIONS ─── */
+
+.chores-panel {
+
+  background: var(--surface);
+
+  border: 1px solid var(--border);
+
+  border-radius: var(--radius-lg);
+
+  overflow: hidden;
+
+}
+
+.chores-panel-header {
+
+  padding: 14px 18px;
+
+  border-bottom: 1px solid var(--border);
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+}
+
+.chores-panel-header h2 {
+
+  font-size: 14px;
+
+  font-weight: 800;
+
+  color: var(--text2);
+
+  text-transform: uppercase;
+
+  letter-spacing: .08em;
+
+}
+
+.time-group { padding: 0 18px; }
+
+.time-label {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  padding: 12px 0 6px;
+
+  font-size: 11px;
+
+  font-weight: 800;
+
+  text-transform: uppercase;
+
+  letter-spacing: .08em;
+
+  color: var(--text3);
+
+  border-bottom: 1px solid var(--border);
+
+  margin-bottom: 4px;
+
+}
+
+.time-dot {
+
+  width: 8px; height: 8px;
+
+  border-radius: 50%;
+
+}
+
+.chore-row {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 10px 0;
+
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+
+  transition: all .2s;
+
+  animation: fadeIn .25s ease;
+
+}
+
+.chore-row:last-child { border-bottom: none; }
+
+@keyframes fadeIn {
+
+  from { opacity: 0; transform: translateY(-6px); }
+
+  to   { opacity: 1; transform: translateY(0); }
+
+}
+
+.chore-check-btn {
+
+  width: 28px; height: 28px;
+
+  border-radius: 50%;
+
+  border: 2px solid rgba(255,255,255,0.15);
+
+  background: transparent;
+
+  cursor: pointer;
+
+  display: flex; align-items: center; justify-content: center;
+
+  flex-shrink: 0;
+
+  transition: all .2s;
+
+  font-size: 14px;
+
+  color: transparent;
+
+}
+
+.chore-check-btn:hover { border-color: var(--kid-color, var(--teal)); }
+
+.chore-check-btn.done {
+
+  border-color: transparent;
+
+  color: white;
+
+}
+
+.chore-text { flex: 1; }
+
+.chore-name-text {
+
+  font-size: 15px;
+
+  font-weight: 700;
+
+  color: var(--text);
+
+  transition: all .2s;
+
+}
+
+.chore-row.done-row .chore-name-text {
+
+  text-decoration: line-through;
+
+  color: var(--text3);
+
+}
+
+.chore-days-text {
+
+  font-size: 11px;
+
+  color: var(--text3);
+
+  font-weight: 600;
+
+  margin-top: 1px;
+
+}
+
+.chore-pts-badge {
+
+  font-size: 12px;
+
+  font-weight: 800;
+
+  padding: 3px 9px;
+
+  border-radius: 20px;
+
+  white-space: nowrap;
+
+}
+
+.chore-del-btn {
+
+  width: 28px; height: 28px;
+
+  background: transparent;
+
+  border: none;
+
+  color: var(--text3);
+
+  cursor: pointer;
+
+  font-size: 16px;
+
+  display: flex; align-items: center; justify-content: center;
+
+  border-radius: 8px;
+
+  opacity: 0;
+
+  transition: all .15s;
+
+}
+
+.chore-row:hover .chore-del-btn { opacity: 1; }
+
+.chore-del-btn:hover { background: var(--coral-dim); color: var(--coral); }
+
+.empty-chores {
+
+  text-align: center;
+
+  padding: 36px 20px;
+
+  color: var(--text3);
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+}
+
+.empty-chores span { font-size: 28px; display: block; margin-bottom: 8px; }
+
+/* ─── ADD CHORE ─── */
+
+.add-chore-panel {
+
+  background: var(--surface);
+
+  border: 1px solid var(--border);
+
+  border-radius: var(--radius-lg);
+
+  padding: 16px 18px;
+
+  margin-top: 16px;
+
+}
+
+.add-chore-panel h3 {
+
+  font-size: 13px;
+
+  font-weight: 800;
+
+  color: var(--text3);
+
+  text-transform: uppercase;
+
+  letter-spacing: .08em;
+
+  margin-bottom: 12px;
+
+}
+
+.form-row {
+
+  display: flex;
+
+  gap: 8px;
+
+  flex-wrap: wrap;
+
+  margin-bottom: 10px;
+
+}
+
+.form-input {
+
+  flex: 1;
+
+  min-width: 120px;
+
+  height: 40px;
+
+  background: var(--surface2);
+
+  border: 1px solid var(--border);
+
+  border-radius: 10px;
+
+  color: var(--text);
+
+  font-family: 'Nunito', sans-serif;
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  padding: 0 12px;
+
+  outline: none;
+
+  transition: border-color .2s;
+
+}
+
+.form-input:focus { border-color: var(--purple); }
+
+.form-input::placeholder { color: var(--text3); }
+
+.form-input option { background: var(--surface2); }
+
+.day-selector {
+
+  display: flex;
+
+  gap: 5px;
+
+  margin-bottom: 10px;
+
+  flex-wrap: wrap;
+
+}
+
+.day-pill {
+
+  height: 30px;
+
+  padding: 0 10px;
+
+  border-radius: 20px;
+
+  background: var(--surface2);
+
+  border: 1px solid var(--border);
+
+  color: var(--text3);
+
+  font-family: 'Nunito', sans-serif;
+
+  font-size: 12px;
+
+  font-weight: 800;
+
+  cursor: pointer;
+
+  transition: all .15s;
+
+}
+
+.day-pill.on {
+
+  background: var(--purple-dim);
+
+  border-color: var(--purple);
+
+  color: var(--purple-light);
+
+}
+
+.add-btn {
+
+  height: 40px;
+
+  padding: 0 20px;
+
+  border-radius: 10px;
+
+  background: var(--purple);
+
+  border: none;
+
+  color: white;
+
+  font-family: 'Nunito', sans-serif;
+
+  font-size: 14px;
+
+  font-weight: 800;
+
+  cursor: pointer;
+
+  transition: all .2s;
+
+  white-space: nowrap;
+
+}
+
+.add-btn:hover { background: var(--purple-light); transform: translateY(-1px); }
+
+.add-btn:active { transform: translateY(0); }
+
+/* ─── SIDEBAR ─── */
+
+.sidebar { display: flex; flex-direction: column; gap: 16px; }
+
+.rewards-panel {
+
+  background: var(--surface);
+
+  border: 1px solid var(--border);
+
+  border-radius: var(--radius-lg);
+
+  overflow: hidden;
+
+}
+
+.panel-header {
+
+  padding: 14px 18px;
+
+  border-bottom: 1px solid var(--border);
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+}
+
+.panel-header h2 {
+
+  font-size: 14px;
+
+  font-weight: 800;
+
+  color: var(--text2);
+
+  text-transform: uppercase;
+
+  letter-spacing: .08em;
+
+}
+
+.panel-stars {
+
+  font-size: 13px;
+
+  font-weight: 800;
+
+  color: var(--amber);
+
+}
+
+.reward-item {
+
+  padding: 11px 18px;
+
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  transition: background .15s;
+
+}
+
+.reward-item:last-child { border-bottom: none; }
+
+.reward-item:hover { background: rgba(255,255,255,0.02); }
+
+.reward-name {
+
+  flex: 1;
+
+  font-size: 13px;
+
+  font-weight: 700;
+
+  color: var(--text);
+
+  line-height: 1.3;
+
+}
+
+.reward-cost {
+
+  font-size: 12px;
+
+  font-weight: 800;
+
+  color: var(--amber);
+
+  background: var(--amber-dim);
+
+  padding: 3px 9px;
+
+  border-radius: 20px;
+
+  white-space: nowrap;
+
+}
+
+.redeem-btn {
+
+  height: 28px;
+
+  padding: 0 12px;
+
+  border-radius: 8px;
+
+  background: var(--teal-dim);
+
+  border: 1px solid var(--teal);
+
+  color: var(--teal);
+
+  font-family: 'Nunito', sans-serif;
+
+  font-size: 12px;
+
+  font-weight: 800;
+
+  cursor: pointer;
+
+  transition: all .15s;
+
+  white-space: nowrap;
+
+}
+
+.redeem-btn:hover { background: var(--teal); color: var(--bg); }
+
+.need-more {
+
+  font-size: 11px;
+
+  color: var(--text3);
+
+  font-weight: 600;
+
+  white-space: nowrap;
+
+}
+
+.reward-del-btn {
+
+  width: 24px; height: 24px;
+
+  background: transparent;
+
+  border: none;
+
+  color: var(--text3);
+
+  cursor: pointer;
+
+  font-size: 14px;
+
+  display: flex; align-items: center; justify-content: center;
+
+  border-radius: 6px;
+
+  opacity: 0;
+
+  transition: all .15s;
+
+}
+
+.reward-item:hover .reward-del-btn { opacity: 1; }
+
+.reward-del-btn:hover { background: var(--coral-dim); color: var(--coral); }
+
+.add-reward-row {
+
+  padding: 12px 18px;
+
+  border-top: 1px solid var(--border);
+
+  display: flex;
+
+  gap: 8px;
+
+}
+
+/* ─── TOAST ─── */
+
+.toast {
+
+  position: fixed;
+
+  bottom: 24px;
+
+  left: 50%;
+
+  transform: translateX(-50%) translateY(80px);
+
+  background: var(--surface2);
+
+  border: 1px solid var(--border);
+
+  border-radius: var(--radius);
+
+  padding: 14px 24px;
+
+  font-size: 15px;
+
+  font-weight: 700;
+
+  color: var(--text);
+
+  z-index: 100;
+
+  transition: transform .35s cubic-bezier(.34,1.56,.64,1);
+
+  white-space: nowrap;
+
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+
+}
+
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* ─── MODAL ─── */
+
+.modal-overlay {
+
+  position: fixed; inset: 0;
+
+  background: rgba(0,0,0,0.7);
+
+  z-index: 50;
+
+  display: flex; align-items: center; justify-content: center;
+
+  padding: 20px;
+
+  backdrop-filter: blur(4px);
+
+}
+
+.modal-box {
+
+  background: var(--surface);
+
+  border: 1px solid rgba(255,255,255,0.12);
+
+  border-radius: var(--radius-xl);
+
+  padding: 28px;
+
+  width: 100%;
+
+  max-width: 380px;
+
+  animation: modalIn .25s cubic-bezier(.34,1.56,.64,1);
+
+}
+
+@keyframes modalIn {
+
+  from { opacity:0; transform: scale(.9); }
+
+  to   { opacity:1; transform: scale(1); }
+
+}
+
+.modal-box h2 {
+
+  font-family: 'Fredoka One', cursive;
+
+  font-size: 22px;
+
+  margin-bottom: 20px;
+
+}
+
+.modal-label {
+
+  font-size: 12px;
+
+  font-weight: 800;
+
+  color: var(--text3);
+
+  text-transform: uppercase;
+
+  letter-spacing: .06em;
+
+  margin-bottom: 6px;
+
+  margin-top: 14px;
+
+  display: block;
+
+}
+
+.modal-input {
+
+  width: 100%;
+
+  height: 44px;
+
+  background: var(--surface2);
+
+  border: 1px solid var(--border);
+
+  border-radius: 10px;
+
+  color: var(--text);
+
+  font-family: 'Nunito', sans-serif;
+
+  font-size: 15px;
+
+  font-weight: 600;
+
+  padding: 0 14px;
+
+  outline: none;
+
+  transition: border-color .2s;
+
+}
+
+.modal-input:focus { border-color: var(--purple); }
+
+.color-picker {
+
+  display: flex; gap: 10px; flex-wrap: wrap; margin-top: 6px;
+
+}
+
+.color-swatch {
+
+  width: 32px; height: 32px;
+
+  border-radius: 50%;
+
+  cursor: pointer;
+
+  border: 2px solid transparent;
+
+  transition: all .2s;
+
+}
+
+.color-swatch.selected { border-color: white; transform: scale(1.15); }
+
+.modal-btns { display: flex; gap: 10px; margin-top: 22px; }
+
+.modal-btn-cancel {
+
+  flex: 1; height: 44px; border-radius: 12px;
+
+  background: var(--surface2); border: 1px solid var(--border);
+
+  color: var(--text2); font-family: 'Nunito',sans-serif;
+
+  font-size: 14px; font-weight: 800; cursor: pointer; transition: all .15s;
+
+}
+
+.modal-btn-cancel:hover { background: var(--surface3); }
+
+.modal-btn-confirm {
+
+  flex: 1; height: 44px; border-radius: 12px;
+
+  background: var(--purple); border: none;
+
+  color: white; font-family: 'Nunito',sans-serif;
+
+  font-size: 14px; font-weight: 800; cursor: pointer; transition: all .15s;
+
+}
+
+.modal-btn-confirm:hover { background: var(--purple-light); }
+
+/* ─── CELEBRATE ─── */
+
+.confetti-piece {
+
+  position: fixed;
+
+  width: 8px; height: 8px;
+
+  border-radius: 2px;
+
+  pointer-events: none;
+
+  z-index: 200;
+
+  animation: confettiFall 1.2s ease-in forwards;
+
+}
+
+@keyframes confettiFall {
+
+  0%   { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+
+}
+
+/* ─── PROGRESS BAR (big) ─── */
+
+.big-progress {
+
+  margin-bottom: 16px;
+
+  padding: 14px 18px;
+
+  background: var(--surface);
+
+  border: 1px solid var(--border);
+
+  border-radius: var(--radius);
+
+}
+
+.big-progress-top {
+
+  display: flex; justify-content: space-between;
+
+  align-items: center; margin-bottom: 8px;
+
+}
+
+.big-progress-label { font-size: 12px; font-weight: 800; color: var(--text3); text-transform: uppercase; letter-spacing: .06em; }
+
+.big-progress-pct { font-size: 13px; font-weight: 800; color: var(--text2); }
+
+.big-progress-track {
+
+  height: 8px; background: rgba(255,255,255,0.06);
+
+  border-radius: 8px; overflow: hidden;
+
+}
+
+.big-progress-fill {
+
+  height: 100%; border-radius: 8px;
+
+  transition: width .5s cubic-bezier(.4,0,.2,1);
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="app" id="app">
+
+  <div class="header">
+
+    <div class="header-left">
+
+      <h1>⭐ Chore <span>Hub</span></h1>
+
+      <div class="header-date" id="header-date"></div>
+
+    </div>
+
+    <div class="header-actions">
+
+      <button class="icon-btn" onclick="resetDay()" title="Reset today's chores">↺</button>
+
+    </div>
+
+  </div>
+
+  <div class="kids-scroll" id="kids-scroll"></div>
+
+  <div class="main">
+
+    <div class="left-col">
+
+      <div class="stats-row" id="stats-row"></div>
+
+      <div class="big-progress" id="big-progress"></div>
+
+      <div class="chores-panel">
+
+        <div class="chores-panel-header">
+
+          <h2>Today's Chores</h2>
+
+          <span id="chores-count" style="font-size:13px;color:var(--text3);font-weight:700"></span>
+
+        </div>
+
+        <div id="chores-body"></div>
+
+      </div>
+
+      <div class="add-chore-panel">
+
+        <h3>+ Add a chore</h3>
+
+        <div class="form-row">
+
+          <input class="form-input" id="new-chore-name" placeholder="Chore name..." style="min-width:180px"/>
+
+          <select class="form-input" id="new-chore-time" style="max-width:140px">
+
+            <option>Morning</option>
+
+            <option>Afternoon</option>
+
+            <option>Evening</option>
+
+            <option>Anytime</option>
+
+          </select>
+
+          <input class="form-input" id="new-chore-pts" type="number" min="1" max="50" value="5" style="max-width:80px" placeholder="★"/>
+
+          <button class="add-btn" onclick="addChore()">Add chore</button>
+
+        </div>
+
+        <div class="day-selector" id="day-selector"></div>
+
+      </div>
+
+    </div>
+
+    <div class="sidebar">
+
+      <div class="rewards-panel">
+
+        <div class="panel-header">
+
+          <h2>Rewards</h2>
+
+          <span class="panel-stars" id="rewards-stars"></span>
+
+        </div>
+
+        <div id="rewards-body"></div>
+
+        <div class="add-reward-row">
+
+          <input class="form-input" id="new-reward-name" placeholder="Reward..." style="flex:2"/>
+
+          <input class="form-input" id="new-reward-pts" type="number" min="5" value="20" style="max-width:70px"/>
+
+          <button class="add-btn" onclick="addReward()">+</button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<div id="toast" class="toast"></div>
+
+<div id="modal-root"></div>
+
+<script>
+
+const DAYS = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+
+const KID_COLORS = [
+
+  {name:'purple', val:'#7c6fe0', dim:'rgba(124,111,224,0.2)'},
+
+  {name:'teal',   val:'#1ec9a0', dim:'rgba(30,201,160,0.2)'},
+
+  {name:'coral',  val:'#f06060', dim:'rgba(240,96,96,0.2)'},
+
+  {name:'amber',  val:'#f5a623', dim:'rgba(245,166,35,0.2)'},
+
+  {name:'pink',   val:'#e56db1', dim:'rgba(229,109,177,0.2)'},
+
+  {name:'blue',   val:'#5ba4f5', dim:'rgba(91,164,245,0.2)'},
+
+];
+
+const TIME_CONFIG = {
+
+  Morning:   { color:'#f5a623', dot:'#f5a623', label:'☀️  Morning' },
+
+  Afternoon: { color:'#5ba4f5', dot:'#5ba4f5', label:'🌤  Afternoon' },
+
+  Evening:   { color:'#a99ef5', dot:'#a99ef5', label:'🌙  Evening' },
+
+  Anytime:   { color:'#1ec9a0', dot:'#1ec9a0', label:'✦  Anytime' },
+
+};
+
+const today = new Date();
+
+const todayIdx = today.getDay();
+
+let state = {
+
+  activeKid: 0,
+
+  kids: [
+
+    {name:'Alex', colorIdx:0, totalStars:12},
+
+    {name:'Sam',  colorIdx:1, totalStars:8},
+
+  ],
+
+  chores: [
+
+    {id:1, kidIdx:0, name:'Make bed',       time:'Morning',   pts:5,  days:[1,2,3,4,5], done:false},
+
+    {id:2, kidIdx:0, name:'Brush teeth',    time:'Morning',   pts:3,  days:[0,1,2,3,4,5,6], done:false},
+
+    {id:3, kidIdx:0, name:'Pick up toys',   time:'Evening',   pts:5,  days:[0,1,2,3,4,5,6], done:false},
+
+    {id:4, kidIdx:0, name:'Set the table',  time:'Evening',   pts:5,  days:[1,2,3,4,5], done:false},
+
+    {id:5, kidIdx:1, name:'Feed the pet',   time:'Morning',   pts:5,  days:[0,1,2,3,4,5,6], done:false},
+
+    {id:6, kidIdx:1, name:'Clear dishes',   time:'Evening',   pts:5,  days:[0,1,2,3,4,5,6], done:false},
+
+    {id:7, kidIdx:1, name:'Homework',       time:'Afternoon', pts:10, days:[1,2,3,4,5], done:false},
+
+  ],
+
+  rewards: [
+
+    {id:1, name:'Extra screen time (30 min)', pts:20},
+
+    {id:2, name:'Choose dinner',              pts:35},
+
+    {id:3, name:'Stay up 30 min late',        pts:40},
+
+    {id:4, name:'Movie night pick',           pts:50},
+
+  ],
+
+  newChoreDays: [0,1,2,3,4,5,6],
+
+  nextId: 10
+
+};
+
+function save() { try { localStorage.setItem('chore-hub-v2', JSON.stringify(state)); } catch(e){} }
+
+function load() { try { const d = localStorage.getItem('chore-hub-v2'); if(d) state = JSON.parse(d); } catch(e){} }
+
+load();
+
+document.getElementById('header-date').textContent =
+
+  today.toLocaleDateString('en-US', {weekday:'long', month:'long', day:'numeric'});
+
+function kidColor(kidIdx) { return KID_COLORS[state.kids[kidIdx]?.colorIdx ?? 0]; }
+
+function todayChores(kidIdx) { return state.chores.filter(c => c.kidIdx===kidIdx && c.days.includes(todayIdx)); }
+
+function render() {
+
+  renderKids();
+
+  renderStats();
+
+  renderChores();
+
+  renderDaySelector();
+
+  renderRewards();
+
+}
+
+function renderKids() {
+
+  const el = document.getElementById('kids-scroll');
+
+  let html = state.kids.map((k, i) => {
+
+    const col = KID_COLORS[k.colorIdx];
+
+    const chores = todayChores(i);
+
+    const done = chores.filter(c=>c.done).length;
+
+    const total = chores.length;
+
+    const pct = total ? Math.round(done/total*100) : 0;
+
+    const initials = k.name.slice(0,2).toUpperCase();
+
+    return `<div class="kid-card${state.activeKid===i?' active':''}" onclick="setKid(${i})"
+
+      style="--kid-color:${col.val}">
+
+      <div class="kid-avatar" style="background:${col.val}">${initials}</div>
+
+      <div class="kid-name">${k.name}</div>
+
+      <div class="kid-stars">★ ${k.totalStars} stars</div>
+
+      <div class="kid-progress-mini"><div class="kid-progress-mini-bar" style="width:${pct}%;background:${col.val}"></div></div>
+
+    </div>`;
+
+  }).join('');
+
+  html += `<div class="add-kid-card" onclick="showAddKid()">
+
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+
+    Add kid
+
+  </div>`;
+
+  el.innerHTML = html;
+
+}
+
+function renderStats() {
+
+  const kid = state.activeKid;
+
+  const chores = todayChores(kid);
+
+  const done = chores.filter(c=>c.done).length;
+
+  const total = chores.length;
+
+  const pct = total ? Math.round(done/total*100) : 0;
+
+  const pts = chores.filter(c=>c.done).reduce((s,c)=>s+c.pts, 0);
+
+  const col = kidColor(kid);
+
+  document.getElementById('stats-row').innerHTML = `
+
+    <div class="stat-card">
+
+      <span class="stat-icon">✅</span>
+
+      <div class="stat-value">${done}<span style="font-size:16px;color:var(--text3)">/${total}</span></div>
+
+      <div class="stat-label">Done today</div>
+
+    </div>
+
+    <div class="stat-card">
+
+      <span class="stat-icon">⭐</span>
+
+      <div class="stat-value" style="color:${col.val}">${pts}</div>
+
+      <div class="stat-label">Stars earned</div>
+
+    </div>
+
+    <div class="stat-card">
+
+      <span class="stat-icon">🏆</span>
+
+      <div class="stat-value">${state.kids[kid].totalStars}</div>
+
+      <div class="stat-label">Total stars</div>
+
+    </div>
+
+  `;
+
+  document.getElementById('big-progress').innerHTML = `
+
+    <div class="big-progress-top">
+
+      <span class="big-progress-label">${state.kids[kid].name}'s progress today</span>
+
+      <span class="big-progress-pct">${pct}%</span>
+
+    </div>
+
+    <div class="big-progress-track">
+
+      <div class="big-progress-fill" style="width:${pct}%;background:linear-gradient(90deg,${col.val},${col.val}99)"></div>
+
+    </div>
+
+  `;
+
+  document.getElementById('chores-count').textContent = ${done}/${total} complete;
+
+}
+
+function renderChores() {
+
+  const kid = state.activeKid;
+
+  const col = kidColor(kid);
+
+  const chores = todayChores(kid);
+
+  const groups = ['Morning','Afternoon','Evening','Anytime'];
+
+  let html = '';
+
+  groups.forEach(g => {
+
+    const gc = chores.filter(c => c.time===g);
+
+    if(!gc.length) return;
+
+    const tc = TIME_CONFIG[g];
+
+    html += `<div class="time-group">
+
+      <div class="time-label"><div class="time-dot" style="background:${tc.dot}"></div>${tc.label}</div>`;
+
+    gc.forEach(c => {
+
+      const daysStr = DAYS.filter((_,i) => c.days.includes(i)).join(' · ');
+
+      html += `<div class="chore-row${c.done?' done-row':''}">
+
+        <button class="chore-check-btn${c.done?' done':''}"
+
+          style="${c.donebackground:${col.val};border-color:${col.val}:''}"
+
+          onclick="toggleChore(${c.id})" aria-label="${c.done?'Unmark':'Mark'} done">
+
+          ${c.done?'✓':''}
+
+        </button>
+
+        <div class="chore-text">
+
+          <div class="chore-name-text">${c.name}</div>
+
+          <div class="chore-days-text">${daysStr}</div>
+
+        </div>
+
+        <span class="chore-pts-badge" style="background:${col.dim};color:${col.val}">+${c.pts}★</span>
+
+        <button class="chore-del-btn" onclick="deleteChore(${c.id})" aria-label="Delete">✕</button>
+
+      </div>`;
+
+    });
+
+    html += </div>;
+
+  });
+
+  if(!html) html = <div class="empty-chores"><span>🎉</span>No chores today!<br>Add one below.</div>;
+
+  document.getElementById('chores-body').innerHTML = html;
+
+}
+
+function renderDaySelector() {
+
+  document.getElementById('day-selector').innerHTML = DAYS.map((d,i) =>
+
+    <button class="day-pill${state.newChoreDays.includes(i)?' on':''}" onclick="toggleDay(${i})">${d}</button>
+
+  ).join('');
+
+}
+
+function renderRewards() {
+
+  const kid = state.kids[state.activeKid];
+
+  document.getElementById('rewards-stars').textContent = ★ ${kid.totalStars};
+
+  const el = document.getElementById('rewards-body');
+
+  if(!state.rewards.length) {
+
+    el.innerHTML = '<div style="padding:16px 18px;font-size:13px;color:var(--text3);font-weight:600">No rewards yet</div>';
+
+    return;
+
+  }
+
+  el.innerHTML = state.rewards.map(r => {
+
+    const canRedeem = kid.totalStars >= r.pts;
+
+    return `<div class="reward-item">
+
+      <div class="reward-name">${r.name}</div>
+
+      <span class="reward-cost">${r.pts}★</span>
+
+      ${canRedeem
+
+        ? <button class="redeem-btn" onclick="redeemReward(${r.id})">Redeem</button>
+
+        : <span class="need-more">-${r.pts - kid.totalStars}★</span>}
+
+      <button class="reward-del-btn" onclick="deleteReward(${r.id})" aria-label="Delete">✕</button>
+
+    </div>`;
+
+  }).join('');
+
+}
+
+function setKid(i) { state.activeKid=i; save(); render(); }
+
+function toggleChore(id) {
+
+  const c = state.chores.find(x=>x.id===id);
+
+  if(!c) return;
+
+  c.done = !c.done;
+
+  const delta = c.done ? c.pts : -c.pts;
+
+  state.kids[c.kidIdx].totalStars = Math.max(0, state.kids[c.kidIdx].totalStars + delta);
+
+  if(c.done) {
+
+    celebrate();
+
+    showToast+${c.pts}★ Great job! 🎉);
+
+    const chores = todayChores(c.kidIdx);
+
+    if(chores.every(x=>x.done) && chores.length > 0) {
+
+      setTimeout(()=>showToast${state.kids[c.kidIdx].name} finished all chores! 🏆), 900);
+
+    }
+
+  }
+
+  save(); render();
+
+}
+
+function deleteChore(id) {
+
+  state.chores = state.chores.filter(c=>c.id!==id);
+
+  save(); render();
+
+}
+
+function toggleDay(i) {
+
+  const idx = state.newChoreDays.indexOf(i);
+
+  if(idx>-1) state.newChoreDays.splice(idx,1);
+
+  else state.newChoreDays.push(i);
+
+  renderDaySelector();
+
+}
+
+function addChore() {
+
+  const name = document.getElementById('new-chore-name').value.trim();
+
+  const time = document.getElementById('new-chore-time').value;
+
+  const pts  = parseInt(document.getElementById('new-chore-pts').value) || 5;
+
+  if(!name) return;
+
+  state.chores.push({id:state.nextId++, kidIdx:state.activeKid, name, time, pts, days:[...state.newChoreDays], done:false});
+
+  document.getElementById('new-chore-name').value='';
+
+  save(); render();
+
+  showToast('Chore added!');
+
+}
+
+function addReward() {
+
+  const name = document.getElementById('new-reward-name').value.trim();
+
+  const pts  = parseInt(document.getElementById('new-reward-pts').value) || 20;
+
+  if(!name) return;
+
+  state.rewards.push({id:state.nextId++, name, pts});
+
+  document.getElementById('new-reward-name').value='';
+
+  save(); render();
+
+  showToast('Reward added!');
+
+}
+
+function deleteReward(id) { state.rewards=state.rewards.filter(r=>r.id!==id); save(); render(); }
+
+function redeemReward(id) {
+
+  const r = state.rewards.find(x=>x.id===id);
+
+  const kid = state.kids[state.activeKid];
+
+  if(!r||kid.totalStars<r.pts) return;
+
+  kid.totalStars -= r.pts;
+
+  celebrate();
+
+  showToast${kid.name} redeemed: ${r.name}! 🎊);
+
+  save(); render();
+
+}
+
+function resetDay() {
+
+  if(!confirm('Reset all chores for ' + state.kids[state.activeKid].name + ' today?')) return;
+
+  state.chores.forEach(c => { if(c.kidIdx===state.activeKid) c.done=false; });
+
+  save(); render();
+
+}
+
+function showAddKid() {
+
+  const colors = KID_COLORS;
+
+  let selectedColor = 0;
+
+  const modal = document.createElement('div');
+
+  modal.className = 'modal-overlay';
+
+  modal.innerHTML = `<div class="modal-box">
+
+    <h2>Add a kid 👦</h2>
+
+    <label class="modal-label">Name</label>
+
+    <input class="modal-input" id="modal-kid-name" placeholder="Kid's name..." autofocus/>
+
+    <label class="modal-label">Color</label>
+
+    <div class="color-picker" id="modal-colors">
+
+      ${colors.map((c,i)=<div class="color-swatch${i===0?' selected':''}" style="background:${c.val}" onclick="selectColor(${i})" data-idx="${i}"></div>).join('')}
+
+    </div>
+
+    <div class="modal-btns">
+
+      <button class="modal-btn-cancel" onclick="closeModal()">Cancel</button>
+
+      <button class="modal-btn-confirm" onclick="confirmAddKid()">Add</button>
+
+    </div>
+
+  </div>`;
+
+  document.getElementById('modal-root').appendChild(modal);
+
+  window._modalColorIdx = 0;
+
+}
+
+window.selectColor = function(i) {
+
+  window._modalColorIdx = i;
+
+  document.querySelectorAll('.color-swatch').forEach((s,idx)=>s.classList.toggle('selected', idx===i));
+
+};
+
+window.confirmAddKid = function() {
+
+  const name = document.getElementById('modal-kid-name').value.trim();
+
+  if(!name) return;
+
+  state.kids.push({name, colorIdx: window._modalColorIdx||0, totalStars:0});
+
+  state.activeKid = state.kids.length-1;
+
+  closeModal(); save(); render();
+
+};
+
+window.closeModal = function() {
+
+  const m = document.getElementById('modal-root');
+
+  m.innerHTML='';
+
+};
+
+let toastTimer;
+
+function showToast(msg) {
+
+  const el = document.getElementById('toast');
+
+  el.textContent = msg;
+
+  el.classList.add('show');
+
+  clearTimeout(toastTimer);
+
+  toastTimer = setTimeout(()=>el.classList.remove('show'), 2500);
+
+}
+
+function celebrate() {
+
+  const colors = ['#7c6fe0','#1ec9a0','#f5a623','#f06060','#e56db1','#5ba4f5'];
+
+  for(let i=0;i<18;i++) {
+
+    const p = document.createElement('div');
+
+    p.className = 'confetti-piece';
+
+    p.style.cssText = `
+
+      left:${Math.random()*100}vw;
+
+      top:-10px;
+
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+
+      animation-delay:${Math.random()*0.4}s;
+
+      animation-duration:${0.8+Math.random()*0.6}s;
+
+      width:${6+Math.random()*6}px;
+
+      height:${6+Math.random()*6}px;
+
+      border-radius:${Math.random()>0.5?'50%':'2px'};
+
+    `;
+
+    document.body.appendChild(p);
+
+    setTimeout(()=>p.remove(), 1400);
+
+  }
+
+}
+
+render();
+
+</script>
+
+</body>
+
+</html>
