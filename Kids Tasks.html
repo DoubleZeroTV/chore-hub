@@ -218,6 +218,24 @@ body::before {
 .add-kid-card:hover { border-color: var(--purple); color: var(--purple-light); }
 .add-kid-card svg { opacity: .6; }
 
+.kid-edit-btn {
+  position: absolute;
+  top: 8px; right: 8px;
+  width: 24px; height: 24px;
+  border-radius: 8px;
+  background: rgba(0,0,0,0.3);
+  border: none;
+  color: rgba(255,255,255,0.5);
+  font-size: 12px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0;
+  transition: all .15s;
+  z-index: 2;
+}
+.kid-card:hover .kid-edit-btn { opacity: 1; }
+.kid-edit-btn:hover { background: rgba(0,0,0,0.6); color: white; }
+
 /* ─── MAIN CONTENT ─── */
 .main {
   padding: 20px 24px 0;
@@ -884,6 +902,7 @@ function renderKids() {
     const initials = k.name.slice(0,2).toUpperCase();
     return `<div class="kid-card${state.activeKid===i?' active':''}" onclick="setKid(${i})"
       style="--kid-color:${col.val}">
+      <button class="kid-edit-btn" onclick="event.stopPropagation();showEditKid(${i})" title="Edit">✎</button>
       <div class="kid-avatar" style="background:${col.val}">${initials}</div>
       <div class="kid-name">${k.name}</div>
       <div class="kid-stars">★ ${k.totalStars} stars</div>
@@ -1110,6 +1129,53 @@ function showAddKid() {
     }
   }, 50);
 }
+
+function showEditKid(kidIdx) {
+  const kid = state.kids[kidIdx];
+  const colors = KID_COLORS;
+  const modal = document.createElement('div');
+  modal.className = 'modal-overlay';
+  modal.innerHTML = `<div class="modal-box">
+    <h2>Edit profile ✎</h2>
+    <label class="modal-label">Name</label>
+    <input class="modal-input" id="modal-kid-name" value="${kid.name}" placeholder="Kid's name..."/>
+    <label class="modal-label">Color</label>
+    <div class="color-picker" id="modal-colors">
+      ${colors.map((c,i)=>`<div class="color-swatch${i===kid.colorIdx?' selected':''}" style="background:${c.val}" onclick="selectColor(${i})" data-idx="${i}"></div>`).join('')}
+    </div>
+    <label class="modal-label" style="margin-top:14px">Total Stars</label>
+    <input class="modal-input" id="modal-kid-stars" type="number" min="0" value="${kid.totalStars}" placeholder="Stars..."/>
+    <div class="modal-btns">
+      <button class="modal-btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="modal-btn-confirm" onclick="confirmEditKid(${kidIdx})">Save</button>
+    </div>
+  </div>`;
+  document.getElementById('modal-root').appendChild(modal);
+  window._modalColorIdx = kid.colorIdx;
+  setTimeout(() => {
+    const inp = document.getElementById('modal-kid-name');
+    if(inp) {
+      inp.focus();
+      inp.select();
+      inp.addEventListener('keydown', e => { if(e.key==='Enter') confirmEditKid(kidIdx); });
+    }
+  }, 50);
+}
+
+window.confirmEditKid = function(kidIdx) {
+  const nameEl = document.getElementById('modal-kid-name');
+  const starsEl = document.getElementById('modal-kid-stars');
+  const name = nameEl ? nameEl.value.trim() : '';
+  if(!name) {
+    if(nameEl) { nameEl.classList.add('error'); setTimeout(()=>nameEl.classList.remove('error'),600); }
+    return;
+  }
+  state.kids[kidIdx].name = name;
+  state.kids[kidIdx].colorIdx = window._modalColorIdx ?? state.kids[kidIdx].colorIdx;
+  if(starsEl) state.kids[kidIdx].totalStars = Math.max(0, parseInt(starsEl.value)||0);
+  closeModal(); save(); render();
+  showToast(name + ' updated! ✅');
+};
 
 window.selectColor = function(i) {
   window._modalColorIdx = i;
